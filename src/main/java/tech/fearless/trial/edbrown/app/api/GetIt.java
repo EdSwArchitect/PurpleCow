@@ -53,18 +53,11 @@ public class GetIt {
                 .request(APPLICATION_JSON)
                 .get(String.class);
 
-        LOGGER.error("The result is: '{}'", answer);
-
         Response response = client.target(counterUrl).request(MediaType.TEXT_PLAIN).buildGet().invoke();
 
         int code = response.getStatusInfo().getStatusCode();
 
-        LOGGER.error("Status is: {}", code);
-        LOGGER.error("Media type: {}", response.getMediaType().getType());
-        LOGGER.error("Content type: {}", response.getHeaderString("Content-Type"));
-
         if (code == 200) {
-
             return Response.ok(answer).build();
         }
         else {

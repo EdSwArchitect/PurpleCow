@@ -42,14 +42,15 @@ public class CounterGet {
                 counterUrl = props.getProperty("counter.url");
 
                 if (counterUrl == null) {
+                    LOGGER.error("Error retrieving config value from file");
                     return -1;
                 }
 
-            } catch (IOException e) {
+            } catch (IOException ioe) {
+                LOGGER.error("Error reading config file", ioe);
                 return -1;
             }
         }
-
 
         String s =
                 client.target(counterUrl)
@@ -62,30 +63,11 @@ public class CounterGet {
             answer = mapper.readValue(s, Counter.class);
 
             LOGGER.error("The mapper worked. Class object: {}", answer);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        } catch (JsonProcessingException jpe) {
+            LOGGER.error("Error unmarshalling the JSON response", jpe);
+            return -1;
         }
 
-        return answer.getValue(); //new Counter(-1);
+        return answer.getValue();
     }
-
-//        LOGGER.error("The result is: '{}'", answer);
-//
-////        Response response = client.target(counterUrl).request(MediaType.TEXT_PLAIN).buildGet().invoke();
-//        Response response = client.target("http://www.foobar.com/nosuchplace").request(MediaType.TEXT_PLAIN).buildGet().invoke();
-//
-//        int code = response.getStatusInfo().getStatusCode();
-//
-//        LOGGER.error("Status is: {}", code);
-//        LOGGER.error("Media type: {}", response.getMediaType().getType());
-//        LOGGER.error("Content type: {}", response.getHeaderString("Content-Type"));
-//
-//        if (code == 200) {
-//
-//            return Response.ok(answer).build();
-//        }
-//        else {
-//            return Response.fromResponse(response).build();
-//        }
-//    }
 }
