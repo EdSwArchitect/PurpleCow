@@ -1,11 +1,6 @@
 #!/bin/bash
 
 checkEnv() {
-  if [ -z ${JETTY_HOME} ]; then
-    echo "Environment variable JETTY_HOME is unset"
-    exit 1
-  fi
-
   if [ -z ${JETTY_BASE} ]; then
     echo "Environment variable JETTY_BASE is unset"
     exit 1
@@ -31,6 +26,10 @@ setPort() {
         echo "Deployed"
         exit 0
         ;;
+      -i | --init)
+        initialize
+        exit 0
+        ;;
       -s | --start)
         startIt
         exit 0
@@ -44,6 +43,13 @@ setPort() {
         ;;
     esac
   done
+}
+
+initialize() {
+  echo "Initializing JETTY environment"
+  java -jar $JETTY_HOME/start.jar --create-startd
+  java -jar $JETTY_HOME/start.jar --add-to-start=server,http,deploy,http2,jsp
+  exit 0
 }
 
 startIt() {
